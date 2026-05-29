@@ -204,12 +204,11 @@
     color: var(--ink); margin-bottom: 0.6rem;
   }
   .q-note {
-    font-size: 0.8rem; color: var(--ink-soft); line-height: 1.55;
+    font-size: 0.8rem; color: var(--ink-soft); line-height: 1.6;
     margin-bottom: 1.5rem; font-style: italic;
     background: var(--bg); border-radius: 8px; padding: 0.6rem 0.75rem;
     border-left: 2px solid var(--purple-mid);
   }
-  .q-spacer { margin-bottom: 1.5rem; }
 
   .options { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.75rem; }
   .opt {
@@ -276,20 +275,33 @@
   .dim-result-max { font-size: 0.8rem; color: var(--ink-soft); }
   .dim-result-bar { height: 3px; background: var(--border-soft); border-radius: 2px; margin-top: 0.5rem; overflow: hidden; }
   .dim-result-fill { height: 100%; border-radius: 2px; }
+
   .next-step-box {
     background: var(--surface); border: 1px solid var(--border-soft);
     border-radius: 14px; padding: 1.375rem; margin-bottom: 1.25rem;
   }
   .next-step-label { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.625rem; }
   .next-step-text { font-size: 0.9rem; color: var(--ink-mid); line-height: 1.7; margin-bottom: 1.1rem; }
+
+  /* CTA + visible email */
+  .cta-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem; }
   .btn-cta {
     display: inline-flex; align-items: center; gap: 0.5rem;
     background: var(--purple); color: #fff; border: none;
     padding: 0.8rem 1.625rem; border-radius: 9px;
     font-size: 0.9rem; font-weight: 500; cursor: pointer;
     text-decoration: none; transition: background 0.2s, transform 0.15s;
+    font-family: 'DM Sans', sans-serif;
   }
   .btn-cta:hover { background: var(--purple-light); transform: translateY(-1px); }
+  .cta-email-visible {
+    font-size: 0.85rem; color: var(--ink-soft); line-height: 1.5;
+  }
+  .cta-email-visible a {
+    color: var(--purple); text-decoration: none; font-weight: 500;
+  }
+  .cta-email-visible a:hover { text-decoration: underline; }
+
   .action-row { display: flex; gap: 0.625rem; margin-bottom: 1.5rem; }
   .btn-action {
     flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
@@ -454,10 +466,16 @@
         <div class="next-step-box anim">
           <div class="next-step-label">Siguiente paso recomendado</div>
           <p class="next-step-text" id="res-next"></p>
-          <a href="mailto:lhernandez@elevatelatam.com" class="btn-cta">
-            Escribir a Laura
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
-          </a>
+          <div class="cta-wrap">
+            <a href="mailto:lhernandez@elevatelatam.com" class="btn-cta">
+              Escribir a Laura
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+            <p class="cta-email-visible">
+              ¿El botón no funciona? Escríbele directamente a
+              <a href="mailto:lhernandez@elevatelatam.com">lhernandez@elevatelatam.com</a>
+            </p>
+          </div>
         </div>
         <div class="action-row anim">
           <button class="btn-action" onclick="downloadPDF()">
@@ -488,129 +506,127 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 /* ══════════════════════════════════════════════
-   CONFIG — pega aquí la URL de tu Apps Script
+   CONFIG — reemplaza con la URL de tu nuevo
+   Google Apps Script después de implementarlo
 ══════════════════════════════════════════════ */
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxFmdXjVbaWxasU2vKCGCUIP-Sd-TpiGPJnVvbauQ5o3hB8XLVqyyOCM3RsYTq_1Ru6/exec';
 
 /* ══════════════════════════════════════════════
-   PREGUNTAS — copiadas exactamente del PPT V2
+   PREGUNTAS — V2 exactas del PPT
 ══════════════════════════════════════════════ */
 const questions = [
-  /* D1 */
   { dim:1, tag:'Dimensión 1 · CEO operativo', num:'1 / 12',
     text:'¿Cuántas personas te reportan directamente hoy?',
-    note: null,
+    note:null,
     opts:[
-      {pts:0, text:'Más de 10 — prácticamente todos pasan por mí'},
-      {pts:1, text:'Entre 7 y 10 — demasiadas, pero es lo que hay'},
-      {pts:2, text:'Entre 4 y 6 — manejable aunque a veces me satura'},
-      {pts:3, text:'3 o menos — tengo estructura clara y funciona'}
+      {pts:0,text:'Más de 10 — prácticamente todos pasan por mí'},
+      {pts:1,text:'Entre 7 y 10 — demasiadas, pero es lo que hay'},
+      {pts:2,text:'Entre 4 y 6 — manejable aunque a veces me satura'},
+      {pts:3,text:'3 o menos — tengo estructura clara y funciona'}
     ]},
   { dim:1, tag:'Dimensión 1 · CEO operativo', num:'2 / 12',
     text:'¿Cuánto de tu semana se va en decisiones operativas que debería tomar alguien de tu equipo?',
     note:'Ejemplos: aprobar compras, resolver conflictos del día a día, responder clientes, revisar reportes operativos, dar seguimiento a tareas que alguien más debería ejecutar.',
     opts:[
-      {pts:0, text:'Más del 70% — casi no tengo tiempo para pensar estratégicamente'},
-      {pts:1, text:'Entre el 50% y 70% — sé que debería cambiar pero no cómo'},
-      {pts:2, text:'Entre el 30% y 50% — trabajo en eso aunque no siempre lo logro'},
-      {pts:3, text:'Menos del 30% — mi equipo maneja lo operativo con autonomía'}
+      {pts:0,text:'Más del 70% — casi no tengo tiempo para pensar estratégicamente'},
+      {pts:1,text:'Entre el 50% y 70% — sé que debería cambiar pero no cómo'},
+      {pts:2,text:'Entre el 30% y 50% — trabajo en eso aunque no siempre lo logro'},
+      {pts:3,text:'Menos del 30% — mi equipo maneja lo operativo con autonomía'}
     ]},
   { dim:1, tag:'Dimensión 1 · CEO operativo', num:'3 / 12',
     text:'¿Qué pasa cuando te vas de viaje o te desconectas un día completo?',
-    note: null,
+    note:null,
     opts:[
-      {pts:0, text:'El teléfono no para — necesitan mi aprobación para todo'},
-      {pts:1, text:'Me llaman para cosas importantes pero podría ser peor'},
-      {pts:2, text:'Funcionan bien, con alguna consulta ocasional'},
-      {pts:3, text:'La empresa opera sin problema — no me necesitan para el día a día'}
+      {pts:0,text:'El teléfono no para — necesitan mi aprobación para todo'},
+      {pts:1,text:'Me llaman para cosas importantes pero podría ser peor'},
+      {pts:2,text:'Funcionan bien, con alguna consulta ocasional'},
+      {pts:3,text:'La empresa opera sin problema — no me necesitan para el día a día'}
     ]},
   { dim:1, tag:'Dimensión 1 · CEO operativo', num:'4 / 12',
     text:'¿Cuándo fue la última vez que pasaste un día completo —sin interrupciones, sin juntas operativas, sin apagar incendios— revisando la estrategia de tu negocio a 3–5 años?',
-    note: null,
+    note:null,
     opts:[
-      {pts:0, text:'No recuerdo — hace meses o no ha pasado este año'},
-      {pts:1, text:'Hace algunas semanas — fue la excepción, no la regla'},
-      {pts:2, text:'Ocurre de vez en cuando — intento proteger ese tiempo'},
-      {pts:3, text:'Regularmente — tengo espacio para pensar en el negocio'}
+      {pts:0,text:'No recuerdo — hace meses o no ha pasado este año'},
+      {pts:1,text:'Hace algunas semanas — fue la excepción, no la regla'},
+      {pts:2,text:'Ocurre de vez en cuando — intento proteger ese tiempo'},
+      {pts:3,text:'Regularmente — tengo espacio para pensar en el negocio'}
     ]},
-  /* D2 */
   { dim:2, tag:'Dimensión 2 · Equipo directivo', num:'5 / 12',
     text:'¿Cuántos de tus líderes directos pueden tomar decisiones estratégicas sin consultarte?',
     note:'Ejemplos: definir prioridades de área, reasignar recursos, pausar un proyecto, negociar con clientes o proveedores clave.',
     opts:[
-      {pts:0, text:'Ninguno o casi ninguno — todo pasa por mí'},
-      {pts:1, text:'Uno o dos — el resto necesita mi aprobación'},
-      {pts:2, text:'La mitad — algunos sí, otros todavía no'},
-      {pts:3, text:'La mayoría — confío en su criterio para decidir solos'}
+      {pts:0,text:'Ninguno o casi ninguno — todo pasa por mí'},
+      {pts:1,text:'Uno o dos — el resto necesita mi aprobación'},
+      {pts:2,text:'La mitad — algunos sí, otros todavía no'},
+      {pts:3,text:'La mayoría — confío en su criterio para decidir solos'}
     ]},
   { dim:2, tag:'Dimensión 2 · Equipo directivo', num:'6 / 12',
     text:'¿Cómo ascendiste a tus líderes actuales a sus posiciones?',
-    note: null,
+    note:null,
     opts:[
-      {pts:0, text:'Por lealtad, antigüedad o porque no había otra opción'},
-      {pts:1, text:'Por resultados operativos — eran los mejores en lo que hacían'},
-      {pts:2, text:'Por resultados y algunas competencias de liderazgo evaluadas'},
-      {pts:3, text:'Por competencias de liderazgo demostradas y evaluadas formalmente'}
+      {pts:0,text:'Por lealtad, antigüedad o porque no había otra opción'},
+      {pts:1,text:'Por resultados operativos — eran los mejores en lo que hacían'},
+      {pts:2,text:'Por resultados y algunas competencias de liderazgo evaluadas'},
+      {pts:3,text:'Por competencias de liderazgo demostradas y evaluadas formalmente'}
     ]},
   { dim:2, tag:'Dimensión 2 · Equipo directivo', num:'7 / 12',
     text:'¿Tienes claridad sobre quiénes son tus líderes de alto potencial* y quiénes necesitan desarrollo urgente**?',
     note:'*Alto potencial: candidatos a sucesión o responsables de áreas críticas del negocio.\n**Desarrollo urgente: quienes hoy tienen brechas que impactan resultados.',
     opts:[
-      {pts:0, text:'No — tengo intuición pero no datos concretos'},
-      {pts:1, text:'Tengo una idea general pero no está documentada ni evaluada'},
-      {pts:2, text:'Sí, aunque el proceso de evaluación podría ser más robusto'},
-      {pts:3, text:'Sí — tenemos un proceso formal de Talent Review con criterios claros'}
+      {pts:0,text:'No — tengo intuición pero no datos concretos'},
+      {pts:1,text:'Tengo una idea general pero no está documentada ni evaluada'},
+      {pts:2,text:'Sí, aunque el proceso de evaluación podría ser más robusto'},
+      {pts:3,text:'Sí — tenemos un proceso formal de Talent Review con criterios claros'}
     ]},
   { dim:2, tag:'Dimensión 2 · Equipo directivo', num:'8 / 12',
     text:'¿Qué tan preparado está tu equipo directivo para acompañar la expansión que tienes planeada?',
-    note: null,
+    note:null,
     opts:[
-      {pts:0, text:'No estoy seguro de que pueda — me preocupa seriamente'},
-      {pts:1, text:'Algunos sí, pero hay brechas importantes que no sé cómo cerrar'},
-      {pts:2, text:'Creo que sí, aunque algunos necesitan desarrollo antes de escalar'},
-      {pts:3, text:'Tengo confianza — el equipo está listo para el siguiente nivel'}
+      {pts:0,text:'No estoy seguro de que pueda — me preocupa seriamente'},
+      {pts:1,text:'Algunos sí, pero hay brechas importantes que no sé cómo cerrar'},
+      {pts:2,text:'Creo que sí, aunque algunos necesitan desarrollo antes de escalar'},
+      {pts:3,text:'Tengo confianza — el equipo está listo para el siguiente nivel'}
     ]},
-  /* D3 */
   { dim:3, tag:'Dimensión 3 · Alineación y retención', num:'9 / 12',
     text:'¿Tu equipo directivo podría explicar con precisión la estrategia del negocio para los próximos 2 años?',
-    note: null,
+    note:null,
     opts:[
-      {pts:0, text:'No — cada quien tiene su propia versión de hacia dónde vamos'},
-      {pts:1, text:'Más o menos — conocen las metas pero no la lógica estratégica'},
-      {pts:2, text:'La mayoría sí, aunque hay algunos desconectados'},
-      {pts:3, text:'Sí — la estrategia está clara y todos la pueden explicar y ejecutar'}
+      {pts:0,text:'No — cada quien tiene su propia versión de hacia dónde vamos'},
+      {pts:1,text:'Más o menos — conocen las metas pero no la lógica estratégica'},
+      {pts:2,text:'La mayoría sí, aunque hay algunos desconectados'},
+      {pts:3,text:'Sí — la estrategia está clara y todos la pueden explicar y ejecutar'}
     ]},
   { dim:3, tag:'Dimensión 3 · Alineación y retención', num:'10 / 12',
     text:'¿Has perdido talento clave* en los últimos 12 meses que no querías perder?',
     note:'*Talento clave: personas cuya salida afectó resultados, generó una crisis operativa o dejó un vacío difícil de cubrir.',
     opts:[
-      {pts:0, text:'Sí, más de una persona importante — y me tomó por sorpresa'},
-      {pts:1, text:'Una persona clave — entiendo parcialmente por qué se fue'},
-      {pts:2, text:'Hubo movimiento pero no fue talento crítico'},
-      {pts:3, text:'No — mi equipo clave está estable y comprometido'}
+      {pts:0,text:'Sí, más de una persona importante — y me tomó por sorpresa'},
+      {pts:1,text:'Una persona clave — entiendo parcialmente por qué se fue'},
+      {pts:2,text:'Hubo movimiento pero no fue talento crítico'},
+      {pts:3,text:'No — mi equipo clave está estable y comprometido'}
     ]},
   { dim:3, tag:'Dimensión 3 · Alineación y retención', num:'11 / 12',
     text:'¿Tienes identificado quién reemplazaría a tus 2 roles más críticos si mañana quedaran vacíos?',
-    note: null,
+    note:null,
     opts:[
-      {pts:0, text:'No — ninguno tiene sucesor identificado y me preocupa'},
-      {pts:1, text:'Tengo personas en mente pero sin un plan formal de desarrollo'},
-      {pts:2, text:'Sí, hay candidatos identificados aunque en proceso de preparación'},
-      {pts:3, text:'Sí — tenemos plan de sucesión activo para los roles críticos'}
+      {pts:0,text:'No — ninguno tiene sucesor identificado y me preocupa'},
+      {pts:1,text:'Tengo personas en mente pero sin un plan formal de desarrollo'},
+      {pts:2,text:'Sí, hay candidatos identificados aunque en proceso de preparación'},
+      {pts:3,text:'Sí — tenemos plan de sucesión activo para los roles críticos'}
     ]},
   { dim:3, tag:'Dimensión 3 · Alineación y retención', num:'12 / 12',
     text:'¿Sabes con Certeza* si tu equipo está motivado por razones más allá del salario?',
     note:'*Certeza = tienes datos documentados, no solo intuición: encuestas, planes de desarrollo individuales, conversaciones registradas con seguimiento.',
     opts:[
-      {pts:0, text:'No — nunca lo hemos evaluado formalmente'},
-      {pts:1, text:'Tengo intuición pero no datos — y me preocupa que se vayan'},
-      {pts:2, text:'Tengo conversaciones individuales aunque no un sistema formal'},
-      {pts:3, text:'Sí — tenemos diagnóstico de motivadores y estrategia de retención integral'}
+      {pts:0,text:'No — nunca lo hemos evaluado formalmente'},
+      {pts:1,text:'Tengo intuición pero no datos — y me preocupa que se vayan'},
+      {pts:2,text:'Tengo conversaciones individuales aunque no un sistema formal'},
+      {pts:3,text:'Sí — tenemos diagnóstico de motivadores y estrategia de retención integral'}
     ]}
 ];
 
 /* ══════════════════════════════════════════════
-   PERFILES DE RESULTADO — tomados del PPT V2
+   PERFILES — V2 exactos del PPT
 ══════════════════════════════════════════════ */
 const profiles = [
   { min:26, max:36,
@@ -655,7 +671,6 @@ function show(id) {
   document.getElementById(id).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
 function getScore(i) {
   return answers[i] !== null ? questions[i].opts[answers[i]].pts : 0;
 }
@@ -669,19 +684,16 @@ function submitForm() {
   const company = document.getElementById('f-company').value.trim();
   const size    = document.getElementById('f-size').value;
   let valid = true;
-
   const check = (inputId, errId, cond) => {
     document.getElementById(inputId).classList.toggle('error', !cond);
     document.getElementById(errId).classList.toggle('show', !cond);
     if (!cond) valid = false;
   };
-
   check('f-name',    'err-name',    name.length > 1);
   check('f-email',   'err-email',   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
   check('f-company', 'err-company', company.length > 1);
   check('f-size',    'err-size',    size !== '');
   if (!valid) return;
-
   lead = { name, email, company, size };
   current = 0;
   answers = new Array(12).fill(null);
@@ -698,15 +710,9 @@ function renderQ() {
   document.getElementById('q-counter').textContent = q.num;
   document.getElementById('q-text').textContent = q.text;
   document.getElementById('q-prog').style.width = ((current + 1) / 12 * 100) + '%';
-
   const noteEl = document.getElementById('q-note');
-  if (q.note) {
-    noteEl.textContent = q.note;
-    noteEl.style.display = 'block';
-  } else {
-    noteEl.style.display = 'none';
-  }
-
+  if (q.note) { noteEl.textContent = q.note; noteEl.style.display = 'block'; }
+  else { noteEl.style.display = 'none'; }
   const wrap = document.getElementById('q-options');
   wrap.innerHTML = '';
   q.opts.forEach((o, i) => {
@@ -716,27 +722,22 @@ function renderQ() {
     btn.onclick = () => pick(i);
     wrap.appendChild(btn);
   });
-
   document.getElementById('btn-back').style.visibility = current === 0 ? 'hidden' : 'visible';
   document.getElementById('btn-next-label').textContent = current === 11 ? 'Ver resultados' : 'Siguiente';
   refreshNext();
 }
-
 function pick(i) {
   answers[current] = i;
   document.querySelectorAll('.opt').forEach((el, idx) => el.classList.toggle('selected', idx === i));
   refreshNext();
 }
-
 function refreshNext() {
   document.getElementById('btn-next').classList.toggle('on', answers[current] !== null);
 }
-
 function goNext() {
   if (answers[current] === null) return;
   if (current < 11) { current++; renderQ(); } else showResults();
 }
-
 function goBack() {
   if (current > 0) { current--; renderQ(); }
 }
@@ -762,7 +763,6 @@ function showResults() {
   sc.textContent = total; sc.style.color = p.color;
   document.getElementById('res-headline').textContent = p.headline;
   document.getElementById('res-desc').textContent = p.desc;
-
   const qb = document.getElementById('res-quote-box');
   qb.style.background = p.bg; qb.style.color = p.color;
   document.getElementById('res-quote').textContent = '\u201C' + p.quote + '\u201D';
@@ -785,19 +785,15 @@ function showResults() {
    GOOGLE SHEETS
 ══════════════════════════════════════════════ */
 async function saveToSheets(d1, d2, d3, total, label) {
-  if (!SHEETS_URL || SHEETS_URL.includes('TU_SCRIPT_ID')) return;
+  if (!SHEETS_URL || SHEETS_URL.includes('https://script.google.com/macros/s/AKfycbxFmdXjVbaWxasU2vKCGCUIP-Sd-TpiGPJnVvbauQ5o3hB8XLVqyyOCM3RsYTq_1Ru6/exec')) return;
   try {
     await fetch(SHEETS_URL, {
-      method: 'POST',
-      mode: 'no-cors',
+      method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         timestamp: new Date().toLocaleString('es-HN', { timeZone: 'America/Tegucigalpa' }),
-        name:    lead.name,
-        email:   lead.email,
-        company: lead.company,
-        size:    lead.size,
-        score:   total, d1, d2, d3, label
+        name: lead.name, email: lead.email, company: lead.company, size: lead.size,
+        score: total, d1, d2, d3, label
       })
     });
   } catch(e) { console.error('Sheets error:', e); }
@@ -812,7 +808,6 @@ function downloadPDF() {
   const doc = new jsPDF({ unit:'mm', format:'a4' });
   const { total, d1, d2, d3, p } = lastResult;
 
-  // Header
   doc.setFillColor(74,63,160); doc.rect(0,0,210,42,'F');
   doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255);
   doc.setFontSize(20); doc.text('Diagnóstico Ejecutivo', 20, 18);
@@ -820,11 +815,9 @@ function downloadPDF() {
   doc.text('Elevate Consulting · Laura Hernández', 20, 27);
   doc.text('lhernandez@elevatelatam.com · www.elevatelatam.com', 20, 34);
 
-  // Lead info
   doc.setTextColor(30,30,30); doc.setFontSize(10); doc.setFont('helvetica','normal');
   doc.text(`${lead.name} · ${lead.company} · ${lead.size} empleados`, 20, 52);
 
-  // Score
   doc.setFont('helvetica','bold'); doc.setFontSize(36); doc.setTextColor(74,63,160);
   doc.text(`${total} / 36`, 20, 68);
   doc.setFontSize(12); doc.setFont('helvetica','normal'); doc.setTextColor(100,100,100);
@@ -832,22 +825,19 @@ function downloadPDF() {
 
   doc.setDrawColor(220,220,220); doc.line(20,82,190,82);
 
-  // Dimensions
   doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(30,30,30);
   doc.text('Resultados por dimensión', 20, 92);
-  [{ n:'D1 · Nivel operativo del CEO', s:d1 },
-   { n:'D2 · Capacidad del equipo directivo', s:d2 },
-   { n:'D3 · Alineación y retención', s:d3 }].forEach((dim,i) => {
-    const y = 102 + i*17;
-    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(60,60,60);
-    doc.text(`${dim.n}: ${dim.s} / 12`, 20, y);
-    doc.setFillColor(230,230,230); doc.roundedRect(115,y-5,65,5,1.5,1.5,'F');
-    doc.setFillColor(74,63,160);  doc.roundedRect(115,y-5,Math.round(65*dim.s/12),5,1.5,1.5,'F');
-  });
+  [{n:'D1 · Nivel operativo del CEO',s:d1},{n:'D2 · Capacidad del equipo directivo',s:d2},{n:'D3 · Alineación y retención',s:d3}]
+    .forEach((dim,i) => {
+      const y = 102 + i*17;
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(60,60,60);
+      doc.text(`${dim.n}: ${dim.s} / 12`, 20, y);
+      doc.setFillColor(230,230,230); doc.roundedRect(115,y-5,65,5,1.5,1.5,'F');
+      doc.setFillColor(74,63,160);  doc.roundedRect(115,y-5,Math.round(65*dim.s/12),5,1.5,1.5,'F');
+    });
 
   doc.line(20,157,190,157);
 
-  // Diagnosis
   doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(30,30,30);
   doc.text('Diagnóstico', 20, 167);
   doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(60,60,60);
@@ -857,16 +847,14 @@ function downloadPDF() {
   const dlines = doc.splitTextToSize(p.desc, 170);
   doc.text(dlines, 20, yp+3); yp = yp+3+dlines.length*5+8;
 
-  // Quote box
   const qlines = doc.splitTextToSize(`"${p.quote}"`, 162);
   doc.setFillColor(238,237,251);
-  doc.roundedRect(18, yp-5, 174, qlines.length*5+14, 3,3,'F');
+  doc.roundedRect(18,yp-5,174,qlines.length*5+14,3,3,'F');
   doc.setFont('helvetica','bolditalic'); doc.setFontSize(9); doc.setTextColor(74,63,160);
   doc.text('Diagnóstico de Laura:', 24, yp+2);
   doc.setFont('helvetica','italic'); doc.setTextColor(50,45,100);
   doc.text(qlines, 24, yp+9); yp = yp+9+qlines.length*5+10;
 
-  // Next step
   if (yp < 250) {
     doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(30,30,30);
     doc.text('Siguiente paso recomendado', 20, yp); yp+=8;
@@ -874,7 +862,6 @@ function downloadPDF() {
     doc.text(doc.splitTextToSize(p.next, 170), 20, yp);
   }
 
-  // Footer
   doc.setFillColor(74,63,160); doc.rect(0,273,210,24,'F');
   doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9);
   doc.text('Laura Hernández · Estratega en Talento y Cultura · Elevate Consulting', 20, 283);
