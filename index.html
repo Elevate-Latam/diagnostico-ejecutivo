@@ -785,7 +785,7 @@ function showResults() {
    GOOGLE SHEETS
 ══════════════════════════════════════════════ */
 async function saveToSheets(d1, d2, d3, total, label) {
-  if (!SHEETS_URL || SHEETS_URL.includes('https://script.google.com/macros/s/AKfycbxFmdXjVbaWxasU2vKCGCUIP-Sd-TpiGPJnVvbauQ5o3hB8XLVqyyOCM3RsYTq_1Ru6/exec')) return;
+  if (!SHEETS_URL || SHEETS_URL.includes('TU_SCRIPT_ID')) return;
   try {
     await fetch(SHEETS_URL, {
       method: 'POST', mode: 'no-cors',
